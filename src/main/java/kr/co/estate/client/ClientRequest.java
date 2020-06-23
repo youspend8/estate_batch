@@ -1,33 +1,36 @@
 package kr.co.estate.client;
 
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 
 @Component
 public class ClientRequest {
     public String getResponse(URL url) {
         try {
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            RequestConfig requestConfig = RequestConfig.custom()
+                    .setConnectionRequestTimeout(1000)
+                    .setConnectTimeout(1000)
+                    .build();
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            CloseableHttpClient httpClient = HttpClients.custom()
+                    .setDefaultRequestConfig(requestConfig)
+                    .build();
 
-            String line = "";
-            StringBuilder result = new StringBuilder();
+            HttpGet get = new HttpGet(url.toString());
 
-            while ((line = br.readLine()) != null) {
-                result.append(line);
-            }
+            CloseableHttpResponse response = httpClient.execute(get);
 
-            return result.toString();
+            return EntityUtils.toString(response.getEntity(), "UTF-8");
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return null;
     }
 }
