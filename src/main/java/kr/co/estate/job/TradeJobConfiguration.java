@@ -10,6 +10,8 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
+
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
@@ -28,9 +30,9 @@ public class TradeJobConfiguration {
     @Bean
     public Step tradeStep() {
         return stepBuilderFactory.get("tradeStep")
-                .<TradeMasterDTO, TradeMasterDTO> chunk(10)
-                .reader(tradeStepConfiguration.reader())
-                .writer(tradeStepConfiguration.writer())
+                .<List<TradeMasterDTO>, List<TradeMasterDTO>> chunk(1)
+                .reader(tradeStepConfiguration)
+                .writer(tradeStepConfiguration)
                 .build();
     }
 }

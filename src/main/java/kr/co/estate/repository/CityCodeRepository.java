@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface CityCodeRepository extends JpaRepository<CityCodeDTO, String> {
     public List<CityCodeDTO> findAllByType(String type);
+    public List<CityCodeDTO> findAllByNameIn(List<String> list);
 }

@@ -29,7 +29,6 @@ public class EstateApiClient {
                     .append("&DEAL_YMD=").append(dealYmd)
                     .toString());
 
-            System.out.println(">> Request URL :: " + url.toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

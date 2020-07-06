@@ -4,12 +4,14 @@ import kr.co.estate.client.ClientRequest;
 import kr.co.estate.client.EstateApiClient;
 import kr.co.estate.common.TradeType;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.json.XML;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TradeService {
     private final ClientRequest clientRequest;
 
@@ -22,8 +24,6 @@ public class TradeService {
 
         JSONObject result = XML.toJSONObject(clientRequest.getResponse(client.getTradeURL()));
 
-        System.out.println(result);
-
         return result.toString();
     }
 
@@ -34,9 +34,15 @@ public class TradeService {
                 .dealYmd(dealYmd)
                 .build();
 
-        JSONObject result = XML.toJSONObject(clientRequest.getResponse(client.getTradeURL()));
+        JSONObject result = new JSONObject();
 
-        System.out.println(result);
+        String response = clientRequest.getResponse(client.getTradeURL());
+        try {
+            result = XML.toJSONObject(response);
+//            log.info(">> ClientResponse toJson :: " + result);
+        } catch (Exception e) {
+            log.error(">> Excepted convert XML to JSON :: " + response);
+        }
 
         return result.toString();
     }
