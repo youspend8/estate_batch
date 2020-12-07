@@ -1,0 +1,8 @@
+
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://${ESTATE_DATASOURCE_URL}/ESTATE
+    username: ${ESTATE_DATASOURCE_USERNAME}
+    password: ${ESTATE_DATASOURCE_PASSWORD}
+    initialization-mode: always
