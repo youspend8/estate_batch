@@ -1,46 +1,54 @@
 package kr.co.estate.client;
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import kr.co.estate.dto.BaseItemDto;
+import kr.co.estate.dto.EstateApiResponseDto;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
-import java.net.SocketTimeoutException;
-import java.net.URL;
+import java.net.URI;
+import java.util.Map;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class ClientRequest {
-    public String getResponse(URL url) {
+    private final XmlMapper xmlMapper;
+    private final RestTemplate restTemplate;
+
+    public String getResponse(String url) {
+        log.debug(">> request url ==> " + url);
+
+        ResponseEntity<String> responseMap =
+                restTemplate.exchange(URI.create(url), HttpMethod.GET, HttpEntity.EMPTY, String.class);
+
+        System.out.println("responseEntity :: " + responseMap);
+        System.out.println("responseEntity :: " + responseMap.getBody());
+
+        ;
         try {
-//            log.info(">> ClientReqeust execute to :: " + url.toString());
-            RequestConfig requestConfig = RequestConfig.custom()
-                    .setConnectionRequestTimeout(5000)
-                    .setSocketTimeout(10000)
-                    .setConnectTimeout(10000)
-                    .build();
-
-            CloseableHttpClient httpClient = HttpClients.custom()
-                    .setDefaultRequestConfig(requestConfig)
-                    .setMaxConnTotal(60)
-                    .setMaxConnPerRoute(60)
-                    .build();
-
-            HttpGet get = new HttpGet(url.toString());
-
-            CloseableHttpResponse response = httpClient.execute(get);
-
-            return EntityUtils.toString(response.getEntity(), "UTF-8");
+            System.out.println(xmlMapper.convertValue(responseMap.getBody(), new ParameterizedTypeReference<Map<String, Object>>() {}));
         } catch (Exception e) {
-            log.error(">> ClientRequest occured [" + e.getCause() + "] by URL :: " + url.toString());
-            if (e instanceof SocketTimeoutException) {
-                getResponse(url);
-            }
+            e.printStackTrace();
         }
+//
+//        RequestConfig requestConfig = RequestConfig.custom()
+//                .setConnectionRequestTimeout(5000)
+//                .setSocketTimeout(10000)
+//                .setConnectTimeout(10000)
+//                .build();
+//
+//        CloseableHttpClient httpClient = HttpClients.custom()
+//                .setDefaultRequestConfig(requestConfig)
+//                .setMaxConnTotal(60)
+//                .setMaxConnPerRoute(60)
+//                .build();
         return null;
     }
 }

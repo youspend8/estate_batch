@@ -1,7 +1,7 @@
 package kr.co.estate.entity;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import kr.co.estate.common.TradeType;
+import kr.co.estate.constants.TradeType;
 import lombok.*;
 import net.bytebuddy.utility.RandomString;
 
@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -17,43 +18,65 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @ToString
 @Entity
-@Table(name="TRADE_MASTER")
+@Table(name = "TRADE_MASTER")
 public class TradeMasterDTO {
     @Id
-    @Column(name="UID")
+    @Column(name = "UID")
     private String uid;
-    @Column(name="DEAL_YEAR")
+
+    @Column(name = "DEAL_YEAR")
     private Integer dealYear;
-    @Column(name="DEAL_MONTH")
+
+    @Column(name = "DEAL_MONTH")
     private Integer dealMonth;
-    @Column(name="DEAL_DAY")
+
+    @Column(name = "DEAL_DAY")
     private Integer dealDay;
-    @Column(name="DONG")
+
+    @Column(name = "DEAL_DATE")
+    private String dealDate;
+
+    @Column(name = "DONG")
     private String dong;
-    @Column(name="JIBUN")
+
+    @Column(name = "JIBUN")
     private String jibun;
-    @Column(name="BUILD_YEAR")
+
+    @Column(name = "BUILD_YEAR")
     private Integer buildYear;
-    @Column(name="REGION_CD")
+
+    @Column(name = "REGION_CD")
     private String regionCode;
-    @Column(name="SIGUNGU")
+
+    @Column(name = "SIGUNGU")
     private String sigungu;
-    @Column(name="FLOOR")
+
+    @Column(name = "FLOOR")
     private Integer floor;
-    @Column(name="AREA")
+
+    @Column(name = "AREA")
     private Double area;
-    @Column(name="AREA_SUB")
+
+    @Column(name = "AREA_SUB")
     private Double areaSub;
-    @Column(name="AMOUNT")
+
+    @Column(name = "AMOUNT")
     private Integer amount;
-    @Column(name="AMOUNT_OPTION")
+
+    @Column(name = "AMOUNT_OPTION")
     private Integer amountOption;
-    @Column(name="TRADE_TYPE")
+
+    @Column(name = "TRADE_TYPE")
     private TradeType tradeType;
-    @Column(name="NAME")
+
+    @Column(name = "NAME")
     private String name;
-    @Column(name="VILLA_TYPE")
+
+    @Column(name = "VILLA_TYPE")
     private String villaType;
+
+    @Column(name = "CREATE_DATE")
+    private LocalDateTime createAt;
 
     public static TradeMasterDTO valueOf(JsonNode jsonNode) {
         TradeMasterDTO tradeMasterDTO = new TradeMasterDTO();

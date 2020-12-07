@@ -1,4 +1,4 @@
-package kr.co.estate.common;
+package kr.co.estate.constants;
 
 public enum TradeType {
     APARTMENT_TRADE,

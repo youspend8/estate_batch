@@ -2,7 +2,7 @@ package kr.co.estate.job;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.co.estate.common.TradeType;
+import kr.co.estate.constants.TradeType;
 import kr.co.estate.entity.CityCodeDTO;
 import kr.co.estate.entity.TradeMasterDTO;
 import kr.co.estate.repository.TradeMasterRepository;
@@ -10,6 +10,7 @@ import kr.co.estate.service.TradeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.item.*;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,6 +21,7 @@ import java.util.stream.StreamSupport;
 
 @Configuration
 @RequiredArgsConstructor
+@Profile("prod")
 public class TradeStepConfiguration implements ItemReader<List<TradeMasterDTO>>, ItemWriter<List<TradeMasterDTO>> {
     private final TradeMasterRepository tradeMasterRepository;
     private final ConcurrentLinkedQueue<CityCodeDTO> cityCodeQueue;

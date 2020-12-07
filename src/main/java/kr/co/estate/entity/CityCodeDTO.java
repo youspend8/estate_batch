@@ -14,21 +14,27 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @ToString
 @Entity
-@Table(name="CITY_CODE")
+@Table(name = "CITY_CODE")
 public class CityCodeDTO {
     @Id
-    @Column(name="COD_ID")
+    @Column(name = "COD_ID")
     private String id;
-    @Column(name="CD_TYPE")
+
+    @Column(name = "CD_TYPE")
     private String type;
-    @Column(name="CD_NAME")
+
+    @Column(name = "CD_NAME")
     private String name;
-    @Column(name="REGION_CD")
+
+    @Column(name = "REGION_CD")
     private String region;
-    @Column(name="SIGUNGU_CD")
+
+    @Column(name = "SIGUNGU_CD")
     private String sigungu;
-    @Column(name="UMD_CD")
+
+    @Column(name = "UMD_CD")
     private String umd;
-    @Column(name="FULLNAME")
+
+    @Column(name = "FULLNAME")
     private String fullname;
 }
