@@ -2,8 +2,8 @@ package kr.co.estate.service;
 
 import kr.co.estate.client.ClientRequest;
 import kr.co.estate.client.ClientRequestURLFactory;
-import kr.co.estate.dto.EstateApiRequestDto;
 import kr.co.estate.constants.TradeType;
+import kr.co.estate.dto.EstateApiRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
@@ -29,11 +29,10 @@ public class TradeService {
         String response = clientRequest.getResponse(
                 clientRequestURLFactory.getRequestURL(estateApiRequestDto));
 
-        System.out.println("response :: " + response);
         try {
             result = XML.toJSONObject(response);
 
-            log.trace(">> ClientResponse toJson :: " + result);
+            log.debug(">> ClientResponse toJson :: " + result);
         } catch (Exception e) {
             log.error(">> Excepted convert XML to JSON :: " + response);
         }

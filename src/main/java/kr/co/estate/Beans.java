@@ -22,7 +22,7 @@ public class Beans {
         List<CityCodeDTO> list = cityCodeRepository.findAllByType("1");
 
 //        return new ConcurrentLinkedQueue<>(list.subList(100, list.size()));
-        return new ConcurrentLinkedQueue<>(list.subList(0, 100));
+        return new ConcurrentLinkedQueue<>(list);
     }
 
     @Bean(name = "forkJoinPool")
