@@ -13,7 +13,7 @@ import javax.persistence.*;
 @ToString
 @Entity
 @Table(name="APARTMENT_TRADE_MASTER")
-public class ApartmentTradePriceDTO {
+public class ApartmentTradePriceEntity {
     @Id
     @Column(name="UID")
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -67,80 +67,80 @@ public class ApartmentTradePriceDTO {
     @Column(name="SERIAL")
     private String serial;
 
-    public static ApartmentTradePriceDTO valueOf(JsonNode jsonNode) {
-        ApartmentTradePriceDTO apartmentTradePriceDTO = new ApartmentTradePriceDTO();
+    public static ApartmentTradePriceEntity valueOf(JsonNode jsonNode) {
+        ApartmentTradePriceEntity apartmentTradePriceEntity = new ApartmentTradePriceEntity();
         if (jsonNode.has("도로명건물부번호코드")) {
-            apartmentTradePriceDTO.setRoadNameBubunCd(jsonNode.get("도로명건물부번호코드").asText());
+            apartmentTradePriceEntity.setRoadNameBubunCd(jsonNode.get("도로명건물부번호코드").asText());
         }
         if (jsonNode.has("법정동지번코드")) {
-            apartmentTradePriceDTO.setLandCd(jsonNode.get("법정동지번코드").asText());
+            apartmentTradePriceEntity.setLandCd(jsonNode.get("법정동지번코드").asText());
         }
         if (jsonNode.has("지역코드")) {
-            apartmentTradePriceDTO.setRegionalCode(jsonNode.get("지역코드").asText());
+            apartmentTradePriceEntity.setRegionalCode(jsonNode.get("지역코드").asText());
         }
         if (jsonNode.has("년")) {
-            apartmentTradePriceDTO.setDealYear(jsonNode.get("년").asText());
+            apartmentTradePriceEntity.setDealYear(jsonNode.get("년").asText());
         }
         if (jsonNode.has("법정동")) {
-            apartmentTradePriceDTO.setDong(jsonNode.get("법정동").asText());
+            apartmentTradePriceEntity.setDong(jsonNode.get("법정동").asText());
         }
         if (jsonNode.has("일련번호")) {
-            apartmentTradePriceDTO.setSerial(jsonNode.get("일련번호").asText());
+            apartmentTradePriceEntity.setSerial(jsonNode.get("일련번호").asText());
         }
         if (jsonNode.has("거래금액")) {
-            apartmentTradePriceDTO.setDealAmount(jsonNode.get("거래금액").asText());
+            apartmentTradePriceEntity.setDealAmount(jsonNode.get("거래금액").asText());
         }
         if (jsonNode.has("도로명코드")) {
-            apartmentTradePriceDTO.setRoadNameCd(jsonNode.get("도로명코드").asText());
+            apartmentTradePriceEntity.setRoadNameCd(jsonNode.get("도로명코드").asText());
         }
         if (jsonNode.has("도로명시군구코드")) {
-            apartmentTradePriceDTO.setRoadNameSigunguCd(jsonNode.get("도로명시군구코드").asText());
+            apartmentTradePriceEntity.setRoadNameSigunguCd(jsonNode.get("도로명시군구코드").asText());
         }
         if (jsonNode.has("법정동본번코드")) {
-            apartmentTradePriceDTO.setBonbun(jsonNode.get("법정동본번코드").asText());
+            apartmentTradePriceEntity.setBonbun(jsonNode.get("법정동본번코드").asText());
         }
         if (jsonNode.has("도로명일련번호코드")) {
-            apartmentTradePriceDTO.setRoadNameSeq(jsonNode.get("도로명일련번호코드").asText());
+            apartmentTradePriceEntity.setRoadNameSeq(jsonNode.get("도로명일련번호코드").asText());
         }
         if (jsonNode.has("아파트")) {
-            apartmentTradePriceDTO.setApartmentName(jsonNode.get("아파트").asText());
+            apartmentTradePriceEntity.setApartmentName(jsonNode.get("아파트").asText());
         }
         if (jsonNode.has("도로명지상지하코드")) {
-            apartmentTradePriceDTO.setRoadNameBasementCd(jsonNode.get("도로명지상지하코드").asText());
+            apartmentTradePriceEntity.setRoadNameBasementCd(jsonNode.get("도로명지상지하코드").asText());
         }
         if (jsonNode.has("법정동부번코드")) {
-            apartmentTradePriceDTO.setBubun(jsonNode.get("법정동부번코드").asText());
+            apartmentTradePriceEntity.setBubun(jsonNode.get("법정동부번코드").asText());
         }
         if (jsonNode.has("지번")) {
-            apartmentTradePriceDTO.setJibun(jsonNode.get("지번").asText());
+            apartmentTradePriceEntity.setJibun(jsonNode.get("지번").asText());
         }
         if (jsonNode.has("도로명")) {
-            apartmentTradePriceDTO.setRoadName(jsonNode.get("도로명").asText());
+            apartmentTradePriceEntity.setRoadName(jsonNode.get("도로명").asText());
         }
         if (jsonNode.has("월")) {
-            apartmentTradePriceDTO.setDealMonth(jsonNode.get("월").asText());
+            apartmentTradePriceEntity.setDealMonth(jsonNode.get("월").asText());
         }
         if (jsonNode.has("법정동읍면동코드")) {
-            apartmentTradePriceDTO.setEubmyundongCd(jsonNode.get("법정동읍면동코드").asText());
+            apartmentTradePriceEntity.setEubmyundongCd(jsonNode.get("법정동읍면동코드").asText());
         }
         if (jsonNode.has("층")) {
-            apartmentTradePriceDTO.setFloor(jsonNode.get("층").asText());
+            apartmentTradePriceEntity.setFloor(jsonNode.get("층").asText());
         }
         if (jsonNode.has("법정동시군구코드")) {
-            apartmentTradePriceDTO.setSigunguCd(jsonNode.get("법정동시군구코드").asText());
+            apartmentTradePriceEntity.setSigunguCd(jsonNode.get("법정동시군구코드").asText());
         }
         if (jsonNode.has("일")) {
-            apartmentTradePriceDTO.setDealDay(jsonNode.get("일").asText());
+            apartmentTradePriceEntity.setDealDay(jsonNode.get("일").asText());
         }
         if (jsonNode.has("도로명건물본번호코드")) {
-            apartmentTradePriceDTO.setRoadNameBonbunCd(jsonNode.get("도로명건물본번호코드").asText());
+            apartmentTradePriceEntity.setRoadNameBonbunCd(jsonNode.get("도로명건물본번호코드").asText());
         }
         if (jsonNode.has("건축년도")) {
-            apartmentTradePriceDTO.setBuildYear(jsonNode.get("건축년도").asText());
+            apartmentTradePriceEntity.setBuildYear(jsonNode.get("건축년도").asText());
         }
         if (jsonNode.has("전용면적")) {
-            apartmentTradePriceDTO.setAreaForExclusiveUse(jsonNode.get("전용면적").asText());
+            apartmentTradePriceEntity.setAreaForExclusiveUse(jsonNode.get("전용면적").asText());
         }
-        return apartmentTradePriceDTO;
+        return apartmentTradePriceEntity;
     }
 }

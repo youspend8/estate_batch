@@ -3,8 +3,8 @@ package kr.co.estate.job;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.co.estate.constants.TradeType;
-import kr.co.estate.entity.CityCodeDTO;
-import kr.co.estate.entity.TradeMasterDTO;
+import kr.co.estate.entity.CityCodeEntity;
+import kr.co.estate.entity.TradeMasterEntity;
 import kr.co.estate.repository.TradeMasterRepository;
 import kr.co.estate.service.TradeService;
 import lombok.RequiredArgsConstructor;
@@ -22,21 +22,21 @@ import java.util.stream.StreamSupport;
 @Configuration
 @RequiredArgsConstructor
 @Profile("prod")
-public class TradeStepConfiguration implements ItemReader<List<TradeMasterDTO>>, ItemWriter<List<TradeMasterDTO>> {
+public class TradeStepConfiguration implements ItemReader<List<TradeMasterEntity>>, ItemWriter<List<TradeMasterEntity>> {
     private final TradeMasterRepository tradeMasterRepository;
-    private final ConcurrentLinkedQueue<CityCodeDTO> cityCodeQueue;
+    private final ConcurrentLinkedQueue<CityCodeEntity> cityCodeQueue;
     private final ForkJoinPool forkJoinPool;
     private final TradeService tradeService;
 
     @Override
-    public List<TradeMasterDTO> read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
-        CityCodeDTO cityCodeDTO = cityCodeQueue.poll();
+    public List<TradeMasterEntity> read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
+        CityCodeEntity cityCodeEntity = cityCodeQueue.poll();
 
-        if (cityCodeDTO == null) {
+        if (cityCodeEntity == null) {
             return null;
         }
 
-        System.out.println("cityCodeDTO :: " + cityCodeDTO);
+        System.out.println("cityCodeDTO :: " + cityCodeEntity);
 
         String[] period = {
 //                  "202005"
@@ -47,21 +47,21 @@ public class TradeStepConfiguration implements ItemReader<List<TradeMasterDTO>>,
                 "201912"
         };
 
-        List<Callable<List<TradeMasterDTO>>> callableList = new ArrayList<>();
+        List<Callable<List<TradeMasterEntity>>> callableList = new ArrayList<>();
 
         List<TradeType> tradeTypeList = Arrays.asList(TradeType.values());
 
         for (String dealYmd : period) {
-            List<Callable<List<TradeMasterDTO>>> temp = tradeTypeList.stream()
-                    .map(x -> this.callable(cityCodeDTO, dealYmd, x))
+            List<Callable<List<TradeMasterEntity>>> temp = tradeTypeList.stream()
+                    .map(x -> this.callable(cityCodeEntity, dealYmd, x))
                     .collect(Collectors.toList());
             callableList.addAll(temp);
         }
 
-        List<Future<List<TradeMasterDTO>>> futureList =
+        List<Future<List<TradeMasterEntity>>> futureList =
                 forkJoinPool.invokeAll(callableList);
 
-        List<TradeMasterDTO> returnList = new ArrayList<>();
+        List<TradeMasterEntity> returnList = new ArrayList<>();
 
         futureList.forEach(x -> {
             if (x.isDone()) {
@@ -76,14 +76,14 @@ public class TradeStepConfiguration implements ItemReader<List<TradeMasterDTO>>,
     }
 
     @Override
-    public void write(List<? extends List<TradeMasterDTO>> list) throws Exception {
+    public void write(List<? extends List<TradeMasterEntity>> list) throws Exception {
         System.out.println(">> count :: " + list.get(0).size());
         tradeMasterRepository.saveAllBatch(list.get(0));
     }
 
-    public Callable<List<TradeMasterDTO>> callable(CityCodeDTO cityCodeDTO, String dealYmd, TradeType tradeType) {
+    public Callable<List<TradeMasterEntity>> callable(CityCodeEntity cityCodeEntity, String dealYmd, TradeType tradeType) {
         return () -> {
-            final String lawdCd = cityCodeDTO.getRegion() + cityCodeDTO.getSigungu();
+            final String lawdCd = cityCodeEntity.getRegion() + cityCodeEntity.getSigungu();
 
             ObjectMapper mapper = new ObjectMapper();
             JsonNode jsonNode = mapper
@@ -91,10 +91,10 @@ public class TradeStepConfiguration implements ItemReader<List<TradeMasterDTO>>,
                     .findPath("item");
 
             return StreamSupport.stream(jsonNode.spliterator(), false)
-                    .map(TradeMasterDTO::valueOf)
+                    .map(TradeMasterEntity::valueOf)
                     .peek(x -> {
                         x.setTradeType(tradeType);
-                        x.setSigungu(cityCodeDTO.getName());
+                        x.setSigungu(cityCodeEntity.getName());
                     })
                     .collect(Collectors.toList());
         };

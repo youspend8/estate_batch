@@ -15,7 +15,7 @@ import javax.persistence.Table;
 @ToString
 @Entity
 @Table(name = "CITY_CODE")
-public class CityCodeDTO {
+public class CityCodeEntity {
     @Id
     @Column(name = "COD_ID")
     private String id;

@@ -1,6 +1,6 @@
 package kr.co.estate.job;
 
-import kr.co.estate.entity.TradeMasterDTO;
+import kr.co.estate.entity.TradeMasterEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -32,7 +32,7 @@ public class TradeJobConfiguration {
     @Bean
     public Step tradeStep() {
         return stepBuilderFactory.get("tradeStep")
-                .<List<TradeMasterDTO>, List<TradeMasterDTO>> chunk(1)
+                .<List<TradeMasterEntity>, List<TradeMasterEntity>> chunk(1)
                 .reader(tradeStepConfiguration)
                 .writer(tradeStepConfiguration)
                 .build();

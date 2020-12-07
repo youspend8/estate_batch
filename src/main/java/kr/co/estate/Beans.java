@@ -1,6 +1,6 @@
 package kr.co.estate;
 
-import kr.co.estate.entity.CityCodeDTO;
+import kr.co.estate.entity.CityCodeEntity;
 import kr.co.estate.repository.CityCodeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -18,8 +18,8 @@ public class Beans {
     private final CityCodeRepository cityCodeRepository;
 
     @Bean(name = "cityCodeQueue")
-    public ConcurrentLinkedQueue<CityCodeDTO> cityCodeQueue() {
-        List<CityCodeDTO> list = cityCodeRepository.findAllByType("1");
+    public ConcurrentLinkedQueue<CityCodeEntity> cityCodeQueue() {
+        List<CityCodeEntity> list = cityCodeRepository.findAllByType("1");
 
 //        return new ConcurrentLinkedQueue<>(list.subList(100, list.size()));
         return new ConcurrentLinkedQueue<>(list);

@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @ToString
 @Entity
 @Table(name = "TRADE_MASTER")
-public class TradeMasterDTO {
+public class TradeMasterEntity {
     @Id
     @Column(name = "UID")
     private String uid;
@@ -78,45 +78,45 @@ public class TradeMasterDTO {
     @Column(name = "CREATE_DATE")
     private LocalDateTime createAt;
 
-    public static TradeMasterDTO valueOf(JsonNode jsonNode) {
-        TradeMasterDTO tradeMasterDTO = new TradeMasterDTO();
-        tradeMasterDTO.setUid(RandomString.make(16));
+    public static TradeMasterEntity valueOf(JsonNode jsonNode) {
+        TradeMasterEntity tradeMasterEntity = new TradeMasterEntity();
+        tradeMasterEntity.setUid(RandomString.make(16));
         if (jsonNode.has("지역코드")) {
-            tradeMasterDTO.setRegionCode(jsonNode.get("지역코드").asText());
+            tradeMasterEntity.setRegionCode(jsonNode.get("지역코드").asText());
         }
         if (jsonNode.has("년")) {
-            tradeMasterDTO.setDealYear(jsonNode.get("년").asInt());
+            tradeMasterEntity.setDealYear(jsonNode.get("년").asInt());
         }
         if (jsonNode.has("월")) {
-            tradeMasterDTO.setDealMonth(jsonNode.get("월").asInt());
+            tradeMasterEntity.setDealMonth(jsonNode.get("월").asInt());
         }
         if (jsonNode.has("일")) {
-            tradeMasterDTO.setDealDay(jsonNode.get("일").asInt());
+            tradeMasterEntity.setDealDay(jsonNode.get("일").asInt());
         }
         if (jsonNode.has("층")) {
-            tradeMasterDTO.setFloor(jsonNode.get("층").asInt());
+            tradeMasterEntity.setFloor(jsonNode.get("층").asInt());
         }
         if (jsonNode.has("건축년도")) {
-            tradeMasterDTO.setBuildYear(jsonNode.get("건축년도").asInt());
+            tradeMasterEntity.setBuildYear(jsonNode.get("건축년도").asInt());
         }
         if (jsonNode.has("법정동")) {
-            tradeMasterDTO.setDong(jsonNode.get("법정동").asText());
+            tradeMasterEntity.setDong(jsonNode.get("법정동").asText());
         }
         if (jsonNode.has("지번")) {
-            tradeMasterDTO.setJibun(jsonNode.get("지번").asText());
+            tradeMasterEntity.setJibun(jsonNode.get("지번").asText());
         }
         if (jsonNode.has("주택유형")) {
-            tradeMasterDTO.setVillaType(jsonNode.get("주택유형").asText());
+            tradeMasterEntity.setVillaType(jsonNode.get("주택유형").asText());
         }
         if (jsonNode.has("시군구")) {
-            tradeMasterDTO.setSigungu(jsonNode.get("시군구").asText());
+            tradeMasterEntity.setSigungu(jsonNode.get("시군구").asText());
         }
-        tradeMasterDTO.setAmount(parseAmount(jsonNode));
-        tradeMasterDTO.setAmountOption(parseAmountOption(jsonNode));
-        tradeMasterDTO.setName(parseName(jsonNode));
-        tradeMasterDTO.setArea(parseArea(jsonNode));
-        tradeMasterDTO.setAreaSub(parseAreaSub(jsonNode));
-        return tradeMasterDTO;
+        tradeMasterEntity.setAmount(parseAmount(jsonNode));
+        tradeMasterEntity.setAmountOption(parseAmountOption(jsonNode));
+        tradeMasterEntity.setName(parseName(jsonNode));
+        tradeMasterEntity.setArea(parseArea(jsonNode));
+        tradeMasterEntity.setAreaSub(parseAreaSub(jsonNode));
+        return tradeMasterEntity;
     }
 
     private static Integer parseAmount(JsonNode jsonNode) {

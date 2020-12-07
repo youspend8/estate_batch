@@ -1,6 +1,6 @@
 package kr.co.estate.repository;
 
-import kr.co.estate.entity.TradeMasterDTO;
+import kr.co.estate.entity.TradeMasterEntity;
 import lombok.RequiredArgsConstructor;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -13,11 +13,11 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class CustomJpaRepositoryImpl implements CustomJpaRepository<TradeMasterDTO> {
+public class CustomJpaRepositoryImpl implements CustomJpaRepository<TradeMasterEntity> {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public void saveAllBatch(List<TradeMasterDTO> list) {
+    public void saveAllBatch(List<TradeMasterEntity> list) {
         final String sql = "INSERT INTO TRADE_MASTER " +
                 "(UID, DEAL_YEAR, DEAL_MONTH, DEAL_DAY, DONG, JIBUN, BUILD_YEAR, REGION_CD, SIGUNGU, FLOOR, AREA, AREA_SUB, AMOUNT, AMOUNT_OPTION, TRADE_TYPE, NAME, VILLA_TYPE, DEAL_DATE, CREATE_DATE) " +
                 "VALUES " +
@@ -26,24 +26,24 @@ public class CustomJpaRepositoryImpl implements CustomJpaRepository<TradeMasterD
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
-                TradeMasterDTO tradeMasterDTO = list.get(i);
+                TradeMasterEntity tradeMasterEntity = list.get(i);
                 ps.setObject(1, RandomString.make(16));
-                ps.setObject(2, tradeMasterDTO.getDealYear());
-                ps.setObject(3, tradeMasterDTO.getDealMonth());
-                ps.setObject(4, tradeMasterDTO.getDealDay());
-                ps.setObject(5, tradeMasterDTO.getDong());
-                ps.setObject(6, tradeMasterDTO.getJibun());
-                ps.setObject(7, tradeMasterDTO.getBuildYear());
-                ps.setObject(8, tradeMasterDTO.getRegionCode());
-                ps.setObject(9, tradeMasterDTO.getSigungu());
-                ps.setObject(10, tradeMasterDTO.getFloor());
-                ps.setObject(11, tradeMasterDTO.getArea());
-                ps.setObject(12, tradeMasterDTO.getAreaSub());
-                ps.setObject(13, tradeMasterDTO.getAmount());
-                ps.setObject(14, tradeMasterDTO.getAmountOption());
-                ps.setObject(15, tradeMasterDTO.getTradeType().ordinal());
-                ps.setObject(16, tradeMasterDTO.getName());
-                ps.setObject(17, tradeMasterDTO.getVillaType());
+                ps.setObject(2, tradeMasterEntity.getDealYear());
+                ps.setObject(3, tradeMasterEntity.getDealMonth());
+                ps.setObject(4, tradeMasterEntity.getDealDay());
+                ps.setObject(5, tradeMasterEntity.getDong());
+                ps.setObject(6, tradeMasterEntity.getJibun());
+                ps.setObject(7, tradeMasterEntity.getBuildYear());
+                ps.setObject(8, tradeMasterEntity.getRegionCode());
+                ps.setObject(9, tradeMasterEntity.getSigungu());
+                ps.setObject(10, tradeMasterEntity.getFloor());
+                ps.setObject(11, tradeMasterEntity.getArea());
+                ps.setObject(12, tradeMasterEntity.getAreaSub());
+                ps.setObject(13, tradeMasterEntity.getAmount());
+                ps.setObject(14, tradeMasterEntity.getAmountOption());
+                ps.setObject(15, tradeMasterEntity.getTradeType().ordinal());
+                ps.setObject(16, tradeMasterEntity.getName());
+                ps.setObject(17, tradeMasterEntity.getVillaType());
             }
 
             @Override
