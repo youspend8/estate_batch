@@ -8,4 +8,4 @@ spring:
     initialization-mode: always
 
   profiles:
-    active: dev
+    active: prod
