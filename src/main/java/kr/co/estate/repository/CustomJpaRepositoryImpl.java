@@ -19,9 +19,32 @@ public class CustomJpaRepositoryImpl implements CustomJpaRepository<TradeMasterE
     @Override
     public void saveAllBatch(List<TradeMasterEntity> list) {
         final String sql = "INSERT INTO TRADE_MASTER " +
-                "(UID, DEAL_YEAR, DEAL_MONTH, DEAL_DAY, DONG, JIBUN, BUILD_YEAR, REGION_CD, SIGUNGU, FLOOR, AREA, AREA_SUB, AMOUNT, AMOUNT_OPTION, TRADE_TYPE, NAME, VILLA_TYPE, DEAL_DATE, CREATE_DATE) " +
-                "VALUES " +
-                "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, current_timestamp())";
+                "(" +
+                "     UID" +
+                "   , DEAL_YEAR" +
+                "   , DEAL_MONTH" +
+                "   , DEAL_DAY" +
+                "   , DONG" +
+                "   , JIBUN" +
+                "   , BUILD_YEAR" +
+                "   , REGION_CD" +
+                "   , SIGUNGU" +
+                "   , FLOOR" +
+                "   , AREA" +
+                "   , AREA_SUB" +
+                "   , AMOUNT" +
+                "   , AMOUNT_OPTION" +
+                "   , TRADE_TYPE" +
+                "   , NAME" +
+                "   , VILLA_TYPE" +
+                "   , CREATE_DATE" +
+                "   , LATITUDE" +
+                "   , LONGITUDE" +
+                "   , COORDINATE" +
+                "   , DEAL_DATE" +
+                ") VALUES (" +
+                "   ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp(), ?, ?, POINT(?, ?), ?" +
+                ")";
 
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
             @Override
@@ -44,6 +67,14 @@ public class CustomJpaRepositoryImpl implements CustomJpaRepository<TradeMasterE
                 ps.setObject(15, tradeMasterEntity.getTradeType().ordinal());
                 ps.setObject(16, tradeMasterEntity.getName());
                 ps.setObject(17, tradeMasterEntity.getVillaType());
+                ps.setObject(18, tradeMasterEntity.getCoordinate().getLongitude());
+                ps.setObject(19, tradeMasterEntity.getCoordinate().getLatitude());
+                ps.setObject(20, tradeMasterEntity.getCoordinate().getLongitude());
+                ps.setObject(21, tradeMasterEntity.getCoordinate().getLatitude());
+                ps.setObject(22, String.format("%d-%d-%d",
+                        tradeMasterEntity.getDealYear(),
+                        tradeMasterEntity.getDealMonth(),
+                        tradeMasterEntity.getDealDay()));
             }
 
             @Override

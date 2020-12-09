@@ -2,13 +2,12 @@ package kr.co.estate.entity;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import kr.co.estate.constants.TradeType;
+import kr.co.estate.entity.embedded.Coordinate;
 import lombok.*;
 import net.bytebuddy.utility.RandomString;
+import org.springframework.data.geo.Point;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
@@ -77,6 +76,12 @@ public class TradeMasterEntity {
 
     @Column(name = "CREATE_DATE")
     private LocalDateTime createAt;
+
+    @Column(name = "COORDINATE")
+    private Point point;
+
+    @Embedded
+    private Coordinate coordinate;
 
     public static TradeMasterEntity valueOf(JsonNode jsonNode) {
         TradeMasterEntity tradeMasterEntity = new TradeMasterEntity();

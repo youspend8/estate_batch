@@ -1,7 +1,7 @@
 package kr.co.estate.service;
 
 import kr.co.estate.client.ClientRequest;
-import kr.co.estate.client.ClientRequestURLFactory;
+import kr.co.estate.client.estate.EstateRequestURLFactory;
 import kr.co.estate.constants.TradeType;
 import kr.co.estate.dto.EstateApiRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -9,14 +9,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.json.XML;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class TradeService {
     private final ClientRequest clientRequest;
-    private final ClientRequestURLFactory clientRequestURLFactory;
+    private final EstateRequestURLFactory estateRequestURLFactory;
 
+    @Transactional
     public String fetchTradePriceByType(String lawdCd, String dealYmd, TradeType tradeType) {
         EstateApiRequestDto estateApiRequestDto = EstateApiRequestDto.builder()
                 .tradeType(tradeType)
@@ -27,7 +29,7 @@ public class TradeService {
         JSONObject result = new JSONObject();
 
         String response = clientRequest.getResponse(
-                clientRequestURLFactory.getRequestURL(estateApiRequestDto));
+                estateRequestURLFactory.getRequestURL(estateApiRequestDto));
 
         try {
             result = XML.toJSONObject(response);

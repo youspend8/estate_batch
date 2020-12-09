@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.co.estate.constants.TradeType;
 import kr.co.estate.entity.CityCodeEntity;
 import kr.co.estate.entity.TradeMasterEntity;
+import kr.co.estate.entity.embedded.Coordinate;
 import kr.co.estate.repository.TradeMasterRepository;
+import kr.co.estate.service.CoordinateService;
 import kr.co.estate.service.TradeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.item.*;
@@ -27,6 +29,7 @@ public class TradeStepConfiguration implements ItemReader<List<TradeMasterEntity
     private final ConcurrentLinkedQueue<CityCodeEntity> cityCodeQueue;
     private final ForkJoinPool forkJoinPool;
     private final TradeService tradeService;
+    private final CoordinateService coordinateService;
 
     @Override
     public List<TradeMasterEntity> read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
@@ -92,9 +95,13 @@ public class TradeStepConfiguration implements ItemReader<List<TradeMasterEntity
 
             return StreamSupport.stream(jsonNode.spliterator(), false)
                     .map(TradeMasterEntity::valueOf)
-                    .peek(x -> {
-                        x.setTradeType(tradeType);
-                        x.setSigungu(cityCodeEntity.getName());
+                    .peek(entity -> {
+                        entity.setTradeType(tradeType);
+                        entity.setSigungu(cityCodeEntity.getName());
+
+                        Coordinate coordinate = coordinateService.searchCoordinate(entity);
+                        entity.setCoordinate(coordinateService.searchCoordinate(entity));
+                        entity.setPoint(coordinate.asEntity());
                     })
                     .collect(Collectors.toList());
         };
