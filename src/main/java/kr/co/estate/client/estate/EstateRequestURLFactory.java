@@ -1,4 +1,4 @@
-package kr.co.estate.client;
+package kr.co.estate.client.estate;
 
 import kr.co.estate.config.properties.OpenApiProperties;
 import kr.co.estate.dto.EstateApiRequestDto;
@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class ClientRequestURLFactory {
+public class EstateRequestURLFactory {
     private final OpenApiProperties openApiProperties;
 
     public String getRequestURL(EstateApiRequestDto estateApiRequestDto) {
