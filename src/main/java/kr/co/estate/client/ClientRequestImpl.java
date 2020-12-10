@@ -1,5 +1,6 @@
 package kr.co.estate.client;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
@@ -24,6 +25,20 @@ public class ClientRequestImpl implements ClientRequest {
 
         if (responseMap.getStatusCode() == HttpStatus.OK) {
             return responseMap.getBody();
+        }
+
+        return null;
+    }
+
+    @Override
+    public JsonNode getResponseJson(String url, HttpHeaders headers) {
+        log.debug("request url ==> {}", url);
+
+        ResponseEntity<JsonNode> responseJson =
+                restTemplate.exchange(URI.create(url), HttpMethod.GET, new HttpEntity<>(headers), new ParameterizedTypeReference<JsonNode>() {});
+
+        if (responseJson.getStatusCode() == HttpStatus.OK) {
+            return responseJson.getBody();
         }
 
         return null;
