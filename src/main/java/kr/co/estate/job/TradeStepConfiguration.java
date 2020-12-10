@@ -5,11 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.co.estate.constants.TradeType;
 import kr.co.estate.entity.CityCodeEntity;
 import kr.co.estate.entity.TradeMasterEntity;
-import kr.co.estate.entity.embedded.Coordinate;
+import kr.co.estate.repository.CityCodeRepository;
 import kr.co.estate.repository.TradeMasterRepository;
 import kr.co.estate.service.CoordinateService;
 import kr.co.estate.service.TradeService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.*;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -24,12 +25,14 @@ import java.util.stream.StreamSupport;
 @Configuration
 @RequiredArgsConstructor
 @Profile("prod")
+@Slf4j
 public class TradeStepConfiguration implements ItemReader<List<TradeMasterEntity>>, ItemWriter<List<TradeMasterEntity>> {
     private final TradeMasterRepository tradeMasterRepository;
     private final ConcurrentLinkedQueue<CityCodeEntity> cityCodeQueue;
     private final ForkJoinPool forkJoinPool;
     private final TradeService tradeService;
     private final CoordinateService coordinateService;
+    private final CityCodeRepository cityCodeRepository;
 
     @Override
     public List<TradeMasterEntity> read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
@@ -39,7 +42,7 @@ public class TradeStepConfiguration implements ItemReader<List<TradeMasterEntity
             return null;
         }
 
-        System.out.println("cityCodeDTO :: " + cityCodeEntity);
+        log.info("cityCodeDTO ==> {}", cityCodeEntity);
 
         String[] period = {
 //                  "202005"
@@ -61,8 +64,7 @@ public class TradeStepConfiguration implements ItemReader<List<TradeMasterEntity
             callableList.addAll(temp);
         }
 
-        List<Future<List<TradeMasterEntity>>> futureList =
-                forkJoinPool.invokeAll(callableList);
+        List<Future<List<TradeMasterEntity>>> futureList = forkJoinPool.invokeAll(callableList);
 
         List<TradeMasterEntity> returnList = new ArrayList<>();
 
@@ -80,7 +82,7 @@ public class TradeStepConfiguration implements ItemReader<List<TradeMasterEntity
 
     @Override
     public void write(List<? extends List<TradeMasterEntity>> list) throws Exception {
-        System.out.println(">> count :: " + list.get(0).size());
+        log.info("count ==> {}", list.get(0).size());
         tradeMasterRepository.saveAllBatch(list.get(0));
     }
 
@@ -97,11 +99,12 @@ public class TradeStepConfiguration implements ItemReader<List<TradeMasterEntity
                     .map(TradeMasterEntity::valueOf)
                     .peek(entity -> {
                         entity.setTradeType(tradeType);
-                        entity.setSigungu(cityCodeEntity.getName());
-
-                        Coordinate coordinate = coordinateService.searchCoordinate(entity);
-                        entity.setCoordinate(coordinateService.searchCoordinate(entity));
-                        entity.setPoint(coordinate.asEntity());
+                        entity.getLocation().setSigungu(cityCodeEntity.getName());
+                        entity.getLocation().setUmdCode(cityCodeRepository
+                                .findByRegionAndSigunguAndName(
+                                        cityCodeEntity.getRegion(), cityCodeEntity.getSigungu(), entity.getLocation().getDong())
+                                .getUmd());
+                        entity.setPoint(coordinateService.searchCoordinate(entity).asEntity());
                     })
                     .collect(Collectors.toList());
         };

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.co.estate.client.ClientRequest;
 import kr.co.estate.client.kakao.KakaoRequestURLFactory;
 import kr.co.estate.entity.TradeMasterEntity;
-import kr.co.estate.entity.embedded.Coordinate;
+import kr.co.estate.dto.CoordinateDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,12 +22,12 @@ public class CoordinateService {
     private final ClientRequest clientRequest;
     private final KakaoRequestURLFactory kakaoRequestURLFactory;
 
-    public Coordinate searchCoordinate(TradeMasterEntity tradeMasterEntity) {
+    public CoordinateDto searchCoordinate(TradeMasterEntity tradeMasterEntity) {
         final String query = String.format("%s %s %s",
-                tradeMasterEntity.getSigungu(), tradeMasterEntity.getDong(),
-                tradeMasterEntity.getJibun() != null ? tradeMasterEntity.getJibun() : "");
+                tradeMasterEntity.getLocation().getSigungu(), tradeMasterEntity.getLocation().getDong(),
+                tradeMasterEntity.getLocation().getJibun() != null ? tradeMasterEntity.getLocation().getJibun() : "");
 
-        log.info("searchCoordinate:query ==> {}", query);
+        log.debug("searchCoordinate:query ==> {}", query);
 
         JsonNode resultJson;
 
@@ -43,10 +43,10 @@ public class CoordinateService {
                 .findPath("documents")
                 .get(0);
 
-        Coordinate coordinate = Coordinate.of(addressJson.get("x").asDouble(), addressJson.get("y").asDouble());
+        CoordinateDto coordinateDto = CoordinateDto.of(addressJson.get("x").asDouble(), addressJson.get("y").asDouble());
 
-        log.info("searchCoordinate:coordinate ==> {}", coordinate);
+        log.debug("searchCoordinate:coordinate ==> {}", coordinateDto);
 
-        return Coordinate.of(addressJson.get("x").asDouble(), addressJson.get("y").asDouble());
+        return CoordinateDto.of(addressJson.get("x").asDouble(), addressJson.get("y").asDouble());
     }
 }

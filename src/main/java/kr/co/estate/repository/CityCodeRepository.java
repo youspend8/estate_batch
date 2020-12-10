@@ -8,6 +8,7 @@ import java.util.List;
 
 @Repository
 public interface CityCodeRepository extends JpaRepository<CityCodeEntity, String> {
-    public List<CityCodeEntity> findAllByType(String type);
-    public List<CityCodeEntity> findAllByNameIn(List<String> list);
+    List<CityCodeEntity> findAllByType(String type);
+    List<CityCodeEntity> findAllByNameIn(List<String> list);
+    CityCodeEntity findByRegionAndSigunguAndName(String region, String sigungu, String name);
 }

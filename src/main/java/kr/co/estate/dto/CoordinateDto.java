@@ -1,4 +1,4 @@
-package kr.co.estate.entity.embedded;
+package kr.co.estate.dto;
 
 import lombok.*;
 import org.springframework.data.geo.Point;
@@ -11,15 +11,15 @@ import javax.persistence.Embeddable;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public class Coordinate {
+public class CoordinateDto {
     @Column(name = "LATITUDE")
     private double latitude;
 
     @Column(name = "LONGITUDE")
     private double longitude;
 
-    public static Coordinate of(double latitude, double longitude) {
-        return new Coordinate(latitude, longitude);
+    public static CoordinateDto of(double latitude, double longitude) {
+        return new CoordinateDto(latitude, longitude);
     }
 
     public Point asEntity() {

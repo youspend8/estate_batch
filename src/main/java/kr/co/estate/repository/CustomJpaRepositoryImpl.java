@@ -1,8 +1,8 @@
 package kr.co.estate.repository;
 
+import kr.co.estate.config.UniqueIdGenerator;
 import kr.co.estate.entity.TradeMasterEntity;
 import lombok.RequiredArgsConstructor;
-import net.bytebuddy.utility.RandomString;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -27,7 +27,6 @@ public class CustomJpaRepositoryImpl implements CustomJpaRepository<TradeMasterE
                 "   , DONG" +
                 "   , JIBUN" +
                 "   , BUILD_YEAR" +
-                "   , REGION_CD" +
                 "   , SIGUNGU" +
                 "   , FLOOR" +
                 "   , AREA" +
@@ -38,43 +37,41 @@ public class CustomJpaRepositoryImpl implements CustomJpaRepository<TradeMasterE
                 "   , NAME" +
                 "   , VILLA_TYPE" +
                 "   , CREATE_DATE" +
-                "   , LATITUDE" +
-                "   , LONGITUDE" +
                 "   , COORDINATE" +
                 "   , DEAL_DATE" +
+                "   , REGION_CD" +
+                "   , SIGUNGU_CD" +
+                "   , UMD_CD" +
                 ") VALUES (" +
-                "   ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp(), ?, ?, POINT(?, ?), ?" +
+                "   ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp(), POINT(?, ?), ?, ?, ?, ?" +
                 ")";
 
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
                 TradeMasterEntity tradeMasterEntity = list.get(i);
-                ps.setObject(1, RandomString.make(16));
-                ps.setObject(2, tradeMasterEntity.getDealYear());
-                ps.setObject(3, tradeMasterEntity.getDealMonth());
-                ps.setObject(4, tradeMasterEntity.getDealDay());
-                ps.setObject(5, tradeMasterEntity.getDong());
-                ps.setObject(6, tradeMasterEntity.getJibun());
+                ps.setObject(1, UniqueIdGenerator.generate());
+                ps.setObject(2, tradeMasterEntity.getDeal().getDealYear());
+                ps.setObject(3, tradeMasterEntity.getDeal().getDealMonth());
+                ps.setObject(4, tradeMasterEntity.getDeal().getDealDay());
+                ps.setObject(5, tradeMasterEntity.getLocation().getDong());
+                ps.setObject(6, tradeMasterEntity.getLocation().getJibun());
                 ps.setObject(7, tradeMasterEntity.getBuildYear());
-                ps.setObject(8, tradeMasterEntity.getRegionCode());
-                ps.setObject(9, tradeMasterEntity.getSigungu());
-                ps.setObject(10, tradeMasterEntity.getFloor());
-                ps.setObject(11, tradeMasterEntity.getArea());
-                ps.setObject(12, tradeMasterEntity.getAreaSub());
-                ps.setObject(13, tradeMasterEntity.getAmount());
-                ps.setObject(14, tradeMasterEntity.getAmountOption());
-                ps.setObject(15, tradeMasterEntity.getTradeType().ordinal());
-                ps.setObject(16, tradeMasterEntity.getName());
-                ps.setObject(17, tradeMasterEntity.getVillaType());
-                ps.setObject(18, tradeMasterEntity.getCoordinate().getLongitude());
-                ps.setObject(19, tradeMasterEntity.getCoordinate().getLatitude());
-                ps.setObject(20, tradeMasterEntity.getCoordinate().getLongitude());
-                ps.setObject(21, tradeMasterEntity.getCoordinate().getLatitude());
-                ps.setObject(22, String.format("%d-%d-%d",
-                        tradeMasterEntity.getDealYear(),
-                        tradeMasterEntity.getDealMonth(),
-                        tradeMasterEntity.getDealDay()));
+                ps.setObject(8, tradeMasterEntity.getLocation().getSigungu());
+                ps.setObject(9, tradeMasterEntity.getFloor());
+                ps.setObject(10, tradeMasterEntity.getArea());
+                ps.setObject(11, tradeMasterEntity.getAreaSub());
+                ps.setObject(12, tradeMasterEntity.getAmount());
+                ps.setObject(13, tradeMasterEntity.getAmountOption());
+                ps.setObject(14, tradeMasterEntity.getTradeType().ordinal());
+                ps.setObject(15, tradeMasterEntity.getName());
+                ps.setObject(16, tradeMasterEntity.getVillaType());
+                ps.setObject(17, tradeMasterEntity.getPoint().getX());
+                ps.setObject(18, tradeMasterEntity.getPoint().getY());
+                ps.setObject(19, tradeMasterEntity.getDeal().getDealDate().toString());
+                ps.setObject(20, tradeMasterEntity.getLocation().getRegionCode());
+                ps.setObject(21, tradeMasterEntity.getLocation().getSigunguCode());
+                ps.setObject(22, tradeMasterEntity.getLocation().getUmdCode());
             }
 
             @Override
