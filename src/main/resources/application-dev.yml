@@ -9,3 +9,10 @@ spring:
 
   profiles:
     active: dev
+
+
+logging.level:
+  kr.co.estate: DEBUG
+  org.springframework.jdbc.core: DEBUG
+  org.hibernate.type: TRACE
+  org.hibernate.SQL: DEBUG

@@ -9,3 +9,10 @@ spring:
 
   profiles:
     active: prod
+
+
+logging.level:
+  kr.co.estate: INFO
+  org.springframework.jdbc.core: INFO
+  org.hibernate.type: INFO
+  org.hibernate.SQL: INFO

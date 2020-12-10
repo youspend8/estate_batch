@@ -4,15 +4,10 @@ spring:
     initialize-schema: always
 
   jpa:
-    show-sql: true
     hibernate:
       ddl-auto: none
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-
-logging.level:
-  kr.co.estate: INFO
-  org.springframework.jdbc.core: INFO
 
 openapi:
   key: JVt793QxN1mmf3WT4Hd9Xa3s08jDkQGSUEE42CovgbsEvSLtRotfI%2BZ%2F343ZziBHGzCWzPmJSOaOU%2BhRqdx%2BYg%3D%3D
