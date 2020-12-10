@@ -25,6 +25,10 @@ public class Deal {
     @Column(name = "DEAL_DATE", nullable = false)
     private LocalDate dealDate;
 
+    public static Deal of(int year, int month) {
+        return new Deal(year, month, 0, LocalDate.of(year, month, 1));
+    }
+
     public static Deal of(int year, int month, int day) {
         return new Deal(year, month, day, LocalDate.of(year, month, day));
     }

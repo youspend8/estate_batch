@@ -94,15 +94,16 @@ public class TradeMasterEntity {
         if (jsonNode.has("시군구")) {
             location.setSigungu(jsonNode.get("시군구").asText());
         }
-
-        //  년 / 월 / 일 은 null 값일 수 없음.
-        tradeMasterEntity.setDeal(Deal.of(jsonNode.get("년").asInt(), jsonNode.get("월").asInt(), jsonNode.get("일").asInt()));
         tradeMasterEntity.setLocation(location);
         tradeMasterEntity.setAmount(parseAmount(jsonNode));
         tradeMasterEntity.setAmountOption(parseAmountOption(jsonNode));
         tradeMasterEntity.setName(parseName(jsonNode));
         tradeMasterEntity.setArea(parseArea(jsonNode));
         tradeMasterEntity.setAreaSub(parseAreaSub(jsonNode));
+        tradeMasterEntity.setDeal(Deal.of(
+                jsonNode.has("년") ? jsonNode.get("년").asInt() : 0,
+                jsonNode.has("월") ? jsonNode.get("월").asInt() : 0,
+                jsonNode.has("일") ? jsonNode.get("일").asInt() : 0));
         return tradeMasterEntity;
     }
 
