@@ -5,14 +5,22 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 @Component
 @RequiredArgsConstructor
 public class KakaoRequestURLFactory {
     private final KakaoApiProperties kakaoApiProperties;
 
     public String getRequestURL(String query) {
-        return kakaoApiProperties.getSearchAddress()
-                + String.format("?query=%s", query);
+        try {
+            return kakaoApiProperties.getSearchAddress()
+                    + String.format("?query=%s", URLEncoder.encode(query, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public HttpHeaders getRequestHeader() {

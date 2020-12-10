@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.co.estate.constants.TradeType;
 import kr.co.estate.entity.CityCodeEntity;
 import kr.co.estate.entity.TradeMasterEntity;
+import kr.co.estate.entity.embedded.Deal;
 import kr.co.estate.repository.CityCodeRepository;
 import kr.co.estate.repository.TradeMasterRepository;
 import kr.co.estate.service.CoordinateService;
@@ -33,25 +34,29 @@ public class TradeStepConfiguration implements ItemReader<List<TradeMasterEntity
     private final TradeService tradeService;
     private final CoordinateService coordinateService;
     private final CityCodeRepository cityCodeRepository;
+    private CityCodeEntity cityCodeEntity;
 
     @Override
     public List<TradeMasterEntity> read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
-        CityCodeEntity cityCodeEntity = cityCodeQueue.poll();
+        cityCodeEntity = cityCodeQueue.poll();
 
         if (cityCodeEntity == null) {
             return null;
         }
 
-        log.info("cityCodeDTO ==> {}", cityCodeEntity);
-
-        String[] period = {
+        List<String> period = Arrays.asList(
 //                  "202005"
 //                , "202004"
 //                , "202003"
 //                , "202002"
 //                , "202001"
                 "201912"
-        };
+        );
+
+        log.info("Read ==> {}, {}({})",
+                String.join("/", period),
+                cityCodeEntity.getRegion() + cityCodeEntity.getSigungu(),
+                cityCodeEntity.getFullname());
 
         List<Callable<List<TradeMasterEntity>>> callableList = new ArrayList<>();
 
@@ -82,7 +87,7 @@ public class TradeStepConfiguration implements ItemReader<List<TradeMasterEntity
 
     @Override
     public void write(List<? extends List<TradeMasterEntity>> list) throws Exception {
-        log.info("count ==> {}", list.get(0).size());
+        log.info("{} save ==> {}", cityCodeEntity.getFullname(),list.get(0).size());
         tradeMasterRepository.saveAllBatch(list.get(0));
     }
 
@@ -100,11 +105,20 @@ public class TradeStepConfiguration implements ItemReader<List<TradeMasterEntity
                     .peek(entity -> {
                         entity.setTradeType(tradeType);
                         entity.getLocation().setSigungu(cityCodeEntity.getName());
-                        entity.getLocation().setUmdCode(cityCodeRepository
-                                .findByRegionAndSigunguAndName(
-                                        cityCodeEntity.getRegion(), cityCodeEntity.getSigungu(), entity.getLocation().getDong())
-                                .getUmd());
+                        entity.getLocation().setUmdCode(
+                                cityCodeRepository.findByRegionAndSigunguAndFullnameLike(
+                                        cityCodeEntity.getRegion(),
+                                        cityCodeEntity.getSigungu(),
+                                        "%" + entity.getLocation().getDong() + "%"
+                                ).orElseGet(() -> {
+                                    log.error("findByRegionAndSigunguAndNameLike is null ==> {} / {} / {}", cityCodeEntity.getRegion(), cityCodeEntity.getSigungu(), entity.getLocation().getDong());
+                                    return new CityCodeEntity();
+                                }).getUmd()
+                        );
                         entity.setPoint(coordinateService.searchCoordinate(entity).asEntity());
+                        if (entity.getDeal().getDealYear() == 0 || entity.getDeal().getDealMonth() == 0) {
+                            entity.setDeal(Deal.of(Integer.parseInt(dealYmd.substring(0, 3)), Integer.parseInt(dealYmd.substring(4, 5))));
+                        }
                     })
                     .collect(Collectors.toList());
         };
