@@ -1,10 +1,12 @@
 package kr.co.estate.entity;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import kr.co.estate.config.UniqueIdGenerator;
 import kr.co.estate.constants.TradeType;
-import kr.co.estate.entity.embedded.Coordinate;
+import kr.co.estate.entity.embedded.Deal;
+import kr.co.estate.entity.embedded.Location;
 import lombok.*;
-import net.bytebuddy.utility.RandomString;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.geo.Point;
 
 import javax.persistence.*;
@@ -21,101 +23,81 @@ import java.time.LocalDateTime;
 public class TradeMasterEntity {
     @Id
     @Column(name = "UID")
+    @GeneratedValue(generator = UniqueIdGenerator.NAME)
+    @GenericGenerator(name = UniqueIdGenerator.NAME, strategy = UniqueIdGenerator.STRATEGY)
     private String uid;
 
-    @Column(name = "DEAL_YEAR")
-    private Integer dealYear;
+    @Column(name = "NAME")
+    private String name;
 
-    @Column(name = "DEAL_MONTH")
-    private Integer dealMonth;
-
-    @Column(name = "DEAL_DAY")
-    private Integer dealDay;
-
-    @Column(name = "DEAL_DATE")
-    private String dealDate;
-
-    @Column(name = "DONG")
-    private String dong;
-
-    @Column(name = "JIBUN")
-    private String jibun;
-
-    @Column(name = "BUILD_YEAR")
+    @Column(name = "BUILD_YEAR", nullable = false)
     private Integer buildYear;
 
-    @Column(name = "REGION_CD")
-    private String regionCode;
-
-    @Column(name = "SIGUNGU")
-    private String sigungu;
-
-    @Column(name = "FLOOR")
+    @Column(name = "FLOOR", length = 3)
     private Integer floor;
 
-    @Column(name = "AREA")
+    @Column(name = "AREA", nullable = false)
     private Double area;
 
     @Column(name = "AREA_SUB")
     private Double areaSub;
 
-    @Column(name = "AMOUNT")
+    @Column(name = "AMOUNT", nullable = false)
     private Integer amount;
 
     @Column(name = "AMOUNT_OPTION")
     private Integer amountOption;
 
-    @Column(name = "TRADE_TYPE")
+    @Column(name = "TRADE_TYPE", nullable = false, length = 1)
     private TradeType tradeType;
-
-    @Column(name = "NAME")
-    private String name;
 
     @Column(name = "VILLA_TYPE")
     private String villaType;
 
-    @Column(name = "CREATE_DATE")
+    @Column(name = "CREATE_DATE", nullable = false)
     private LocalDateTime createAt;
 
-    @Column(name = "COORDINATE")
+    @Column(name = "COORDINATE", nullable = false)
     private Point point;
 
     @Embedded
-    private Coordinate coordinate;
+    private Deal deal;
+
+    @Embedded
+    private Location location;
 
     public static TradeMasterEntity valueOf(JsonNode jsonNode) {
         TradeMasterEntity tradeMasterEntity = new TradeMasterEntity();
-        tradeMasterEntity.setUid(RandomString.make(16));
-        if (jsonNode.has("지역코드")) {
-            tradeMasterEntity.setRegionCode(jsonNode.get("지역코드").asText());
-        }
-        if (jsonNode.has("년")) {
-            tradeMasterEntity.setDealYear(jsonNode.get("년").asInt());
-        }
-        if (jsonNode.has("월")) {
-            tradeMasterEntity.setDealMonth(jsonNode.get("월").asInt());
-        }
-        if (jsonNode.has("일")) {
-            tradeMasterEntity.setDealDay(jsonNode.get("일").asInt());
-        }
+
         if (jsonNode.has("층")) {
             tradeMasterEntity.setFloor(jsonNode.get("층").asInt());
         }
         if (jsonNode.has("건축년도")) {
             tradeMasterEntity.setBuildYear(jsonNode.get("건축년도").asInt());
         }
-        if (jsonNode.has("법정동")) {
-            tradeMasterEntity.setDong(jsonNode.get("법정동").asText());
-        }
-        if (jsonNode.has("지번")) {
-            tradeMasterEntity.setJibun(jsonNode.get("지번").asText());
-        }
         if (jsonNode.has("주택유형")) {
             tradeMasterEntity.setVillaType(jsonNode.get("주택유형").asText());
         }
-        if (jsonNode.has("시군구")) {
-            tradeMasterEntity.setSigungu(jsonNode.get("시군구").asText());
+
+        Location location = new Location();
+
+        if (jsonNode.has("지역코드")) {
+            location.setRegionCode(jsonNode.get("지역코드").asText().substring(0, 2));
+            location.setSigunguCode(jsonNode.get("지역코드").asText().substring(2, 5));
         }
+        if (jsonNode.has("법정동")) {
+            location.setDong(jsonNode.get("법정동").asText());
+        }
+        if (jsonNode.has("지번")) {
+            location.setJibun(jsonNode.get("지번").asText());
+        }
+        if (jsonNode.has("시군구")) {
+            location.setSigungu(jsonNode.get("시군구").asText());
+        }
+
+        //  년 / 월 / 일 은 null 값일 수 없음.
+        tradeMasterEntity.setDeal(Deal.of(jsonNode.get("년").asInt(), jsonNode.get("월").asInt(), jsonNode.get("일").asInt()));
+        tradeMasterEntity.setLocation(location);
         tradeMasterEntity.setAmount(parseAmount(jsonNode));
         tradeMasterEntity.setAmountOption(parseAmountOption(jsonNode));
         tradeMasterEntity.setName(parseName(jsonNode));
