@@ -11,5 +11,6 @@ import java.util.Optional;
 public interface CityCodeRepository extends JpaRepository<CityCodeEntity, String> {
     List<CityCodeEntity> findAllByType(String type);
     List<CityCodeEntity> findAllByNameIn(List<String> list);
+    Optional<CityCodeEntity> findByRegionAndSigunguAndName(String region, String sigungu, String name);
     Optional<CityCodeEntity> findByRegionAndSigunguAndFullnameLike(String region, String sigungu, String name);
 }

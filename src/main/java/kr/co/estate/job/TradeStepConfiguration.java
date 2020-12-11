@@ -45,12 +45,13 @@ public class TradeStepConfiguration implements ItemReader<List<TradeMasterEntity
         }
 
         List<String> period = Arrays.asList(
+//                    "202011"
+                    "202010"
 //                  "202005"
 //                , "202004"
 //                , "202003"
 //                , "202002"
 //                , "202001"
-                "201912"
         );
 
         log.info("Read ==> {}, {}({})",
@@ -106,15 +107,18 @@ public class TradeStepConfiguration implements ItemReader<List<TradeMasterEntity
                         entity.setTradeType(tradeType);
                         entity.getLocation().setSigungu(cityCodeEntity.getName());
                         entity.getLocation().setUmdCode(
-                                cityCodeRepository.findByRegionAndSigunguAndFullnameLike(
+                                cityCodeRepository.findByRegionAndSigunguAndName(
+                                        cityCodeEntity.getRegion(),
+                                        cityCodeEntity.getSigungu(),
+                                        entity.getLocation().getDong()
+                                ).orElseGet(() -> cityCodeRepository.findByRegionAndSigunguAndFullnameLike(
                                         cityCodeEntity.getRegion(),
                                         cityCodeEntity.getSigungu(),
                                         "%" + entity.getLocation().getDong() + "%"
                                 ).orElseGet(() -> {
                                     log.error("findByRegionAndSigunguAndNameLike is null ==> {} / {} / {}", cityCodeEntity.getRegion(), cityCodeEntity.getSigungu(), entity.getLocation().getDong());
-                                    return new CityCodeEntity();
-                                }).getUmd()
-                        );
+                                    return cityCodeEntity;
+                                })).getUmd());
                         entity.setPoint(coordinateService.searchCoordinate(entity).asEntity());
                         if (entity.getDeal().getDealYear() == 0 || entity.getDeal().getDealMonth() == 0) {
                             entity.setDeal(Deal.of(Integer.parseInt(dealYmd.substring(0, 3)), Integer.parseInt(dealYmd.substring(4, 5))));

@@ -30,6 +30,10 @@ public class Deal {
     }
 
     public static Deal of(int year, int month, int day) {
-        return new Deal(year, month, day, LocalDate.of(year, month, day));
+        try {
+            return new Deal(year, month, day, LocalDate.of(year, month, day));
+        } catch (Exception e) {
+            return new Deal(year, month, day, null);
+        }
     }
 }
