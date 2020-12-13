@@ -39,13 +39,14 @@ public class CustomJpaRepositoryImpl implements CustomJpaRepository<TradeMasterE
                 "   , NAME" +
                 "   , VILLA_TYPE" +
                 "   , CREATE_DATE" +
-                "   , COORDINATE" +
+                "   , LONGITUDE" +
+                "   , LATITUDE" +
                 "   , DEAL_DATE" +
                 "   , REGION_CD" +
                 "   , SIGUNGU_CD" +
                 "   , UMD_CD" +
                 ") VALUES (" +
-                "   ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp(), POINT(?, ?), ?, ?, ?, ?" +
+                "   ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp(), ?, ?, ?, ?, ?, ?" +
                 ")";
 
         try {
@@ -69,8 +70,8 @@ public class CustomJpaRepositoryImpl implements CustomJpaRepository<TradeMasterE
                     ps.setObject(14, tradeMasterEntity.getTradeType().ordinal());
                     ps.setObject(15, tradeMasterEntity.getName());
                     ps.setObject(16, tradeMasterEntity.getVillaType());
-                    ps.setObject(17, tradeMasterEntity.getPoint().getX());
-                    ps.setObject(18, tradeMasterEntity.getPoint().getY());
+                    ps.setObject(17, tradeMasterEntity.getCoordinate().getLongitude());
+                    ps.setObject(18, tradeMasterEntity.getCoordinate().getLongitude());
                     ps.setObject(19, tradeMasterEntity.getDeal().getDealDate().toString());
                     ps.setObject(20, tradeMasterEntity.getLocation().getRegionCode());
                     ps.setObject(21, tradeMasterEntity.getLocation().getSigunguCode());

@@ -1,7 +1,7 @@
 package kr.co.estate.dto;
 
+import kr.co.estate.entity.embedded.Coordinate;
 import lombok.*;
-import org.springframework.data.geo.Point;
 
 @ToString
 @NoArgsConstructor
@@ -15,7 +15,7 @@ public class CoordinateDto {
         return new CoordinateDto(longitude, latitude);
     }
 
-    public Point asEntity() {
-        return new Point(longitude, latitude);
+    public Coordinate asEntity() {
+        return new Coordinate(longitude, latitude);
     }
 }

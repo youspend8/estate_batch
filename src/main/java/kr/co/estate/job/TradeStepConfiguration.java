@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Profile;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
@@ -35,6 +36,7 @@ public class TradeStepConfiguration implements ItemReader<List<TradeMasterEntity
     private final CoordinateService coordinateService;
     private final CityCodeRepository cityCodeRepository;
     private CityCodeEntity cityCodeEntity;
+    private final ObjectMapper objectMapper;
 
     @Override
     public List<TradeMasterEntity> read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
@@ -45,8 +47,8 @@ public class TradeStepConfiguration implements ItemReader<List<TradeMasterEntity
         }
 
         List<String> period = Arrays.asList(
-//                    "202011"
-                    "202010"
+                    "202011"
+//                    "202010"
 //                  "202005"
 //                , "202004"
 //                , "202003"
@@ -96,35 +98,43 @@ public class TradeStepConfiguration implements ItemReader<List<TradeMasterEntity
         return () -> {
             final String lawdCd = cityCodeEntity.getRegion() + cityCodeEntity.getSigungu();
 
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode jsonNode = mapper
+            JsonNode jsonNode = objectMapper
                     .readTree(tradeService.fetchTradePriceByType(lawdCd, dealYmd, tradeType))
                     .findPath("item");
 
-            return StreamSupport.stream(jsonNode.spliterator(), false)
-                    .map(TradeMasterEntity::valueOf)
-                    .peek(entity -> {
-                        entity.setTradeType(tradeType);
-                        entity.getLocation().setSigungu(cityCodeEntity.getName());
-                        entity.getLocation().setUmdCode(
-                                cityCodeRepository.findByRegionAndSigunguAndName(
-                                        cityCodeEntity.getRegion(),
-                                        cityCodeEntity.getSigungu(),
-                                        entity.getLocation().getDong()
-                                ).orElseGet(() -> cityCodeRepository.findByRegionAndSigunguAndFullnameLike(
-                                        cityCodeEntity.getRegion(),
-                                        cityCodeEntity.getSigungu(),
-                                        "%" + entity.getLocation().getDong() + "%"
-                                ).orElseGet(() -> {
-                                    log.error("findByRegionAndSigunguAndNameLike is null ==> {} / {} / {}", cityCodeEntity.getRegion(), cityCodeEntity.getSigungu(), entity.getLocation().getDong());
-                                    return cityCodeEntity;
-                                })).getUmd());
-                        entity.setPoint(coordinateService.searchCoordinate(entity).asEntity());
-                        if (entity.getDeal().getDealYear() == 0 || entity.getDeal().getDealMonth() == 0) {
-                            entity.setDeal(Deal.of(Integer.parseInt(dealYmd.substring(0, 3)), Integer.parseInt(dealYmd.substring(4, 5))));
-                        }
-                    })
-                    .collect(Collectors.toList());
+            if (jsonNode.isObject()) {
+                return Collections.singletonList(setInformation(jsonNode, cityCodeEntity, dealYmd, tradeType));
+            } else {
+                return StreamSupport.stream(jsonNode.spliterator(), false)
+                        .map(json -> setInformation(json, cityCodeEntity, dealYmd, tradeType))
+                        .collect(Collectors.toList());
+            }
         };
+    }
+
+    private TradeMasterEntity setInformation(JsonNode jsonNode, CityCodeEntity cityCodeEntity, String dealYmd, TradeType tradeType) {
+        TradeMasterEntity entity = TradeMasterEntity.valueOf(jsonNode);
+
+        entity.setTradeType(tradeType);
+        entity.getLocation().setSigungu(cityCodeEntity.getName());
+        entity.getLocation().setUmdCode(
+                cityCodeRepository.findByRegionAndSigunguAndName(
+                        cityCodeEntity.getRegion(),
+                        cityCodeEntity.getSigungu(),
+                        entity.getLocation().getDong()
+                ).orElseGet(() -> cityCodeRepository.findByRegionAndSigunguAndFullnameLike(
+                        cityCodeEntity.getRegion(),
+                        cityCodeEntity.getSigungu(),
+                        "%" + entity.getLocation().getDong() + "%"
+                ).orElseGet(() -> {
+                    log.error("findByRegionAndSigunguAndNameLike is null ==> {} / {} / {}", cityCodeEntity.getRegion(), cityCodeEntity.getSigungu(), entity.getLocation().getDong());
+                    return cityCodeEntity;
+                })).getUmd());
+        entity.setCoordinate(coordinateService.searchCoordinate(entity).asEntity());
+        if (entity.getDeal().getDealYear() == 0 || entity.getDeal().getDealMonth() == 0) {
+            entity.setDeal(Deal.of(Integer.parseInt(dealYmd.substring(0, 3)), Integer.parseInt(dealYmd.substring(4, 5))));
+        }
+
+        return entity;
     }
 }
