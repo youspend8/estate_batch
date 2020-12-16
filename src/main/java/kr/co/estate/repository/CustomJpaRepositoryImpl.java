@@ -71,7 +71,7 @@ public class CustomJpaRepositoryImpl implements CustomJpaRepository<TradeMasterE
                     ps.setObject(15, tradeMasterEntity.getName());
                     ps.setObject(16, tradeMasterEntity.getVillaType());
                     ps.setObject(17, tradeMasterEntity.getCoordinate().getLongitude());
-                    ps.setObject(18, tradeMasterEntity.getCoordinate().getLongitude());
+                    ps.setObject(18, tradeMasterEntity.getCoordinate().getLatitude());
                     ps.setObject(19, tradeMasterEntity.getDeal().getDealDate().toString());
                     ps.setObject(20, tradeMasterEntity.getLocation().getRegionCode());
                     ps.setObject(21, tradeMasterEntity.getLocation().getSigunguCode());
