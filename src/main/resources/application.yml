@@ -2,6 +2,8 @@
 spring:
   batch:
     initialize-schema: always
+    job:
+      names: ${job.name:NONE}
 
   jpa:
     hibernate:
@@ -28,3 +30,7 @@ naver-api:
   client-id: j767ea842t
   client-secret: Kndc2cmKXLj32c0Mz2OgUcHrDxF6PTS0CuONpsn8
   search-address: https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode
+
+json-files:
+  base-path: /data/json/
+  aggregation: aggregation
