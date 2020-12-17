@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.estate.mapper.TradeMasterMapper">
+    <select id="aggregateByCity" resultType="hashMap">
+        SELECT STRAIGHT_JOIN    CC.*
+                           , 	AVG(AMOUNT) AS AMOUNT_AVG
+                           , 	COUNT(*) AS TRADE_COUNT
+        FROM 		CITY_CODE CC
+        INNER JOIN 	TRADE_MASTER TM
+        ON 			CC.REGION_CD = TM.REGION_CD
+        <if test="type >= 1">
+            AND 		CC.SIGUNGU_CD = TM.SIGUNGU_CD
+        </if>
+        <if test="type >= 2">
+            AND			CC.UMD_CD = TM.UMD_CD
+        </if>
+        WHERE 	    CD_TYPE = #{type}
+        AND         TM.TRADE_TYPE IN (
+            <foreach collection="tradeTypeList" item="item" separator=",">
+                #{item}
+            </foreach>
+        )
+        GROUP BY CC.VALUE
+        ORDER BY NULL
+    </select>
+</mapper>

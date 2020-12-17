@@ -36,7 +36,6 @@ public class CoordinateService {
         addressJson = addressJson.isArray() ? addressJson.get(0) : addressJson;
         try {
             if (!addressJson.has("x") || !addressJson.has("y")) {
-                log.info("addressJson ==> {}", addressJson);
                 log.error(query + " : x or y 의 값이 존재하지 않습니다.");
                 return CoordinateDto.of(0, 0);
             }
