@@ -18,7 +18,7 @@ public class TradeService {
     private final ClientRequest clientRequest;
     private final EstateRequestURLFactory estateRequestURLFactory;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public String fetchTradePriceByType(String lawdCd, String dealYmd, TradeType tradeType) {
         EstateApiRequestDto estateApiRequestDto = EstateApiRequestDto.builder()
                 .tradeType(tradeType)

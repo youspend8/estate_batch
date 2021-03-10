@@ -12,7 +12,7 @@ spring:
 
 
 logging.level:
-  kr.co.estate: INFO
+  kr.co.estate: DEBUG
   org.springframework.jdbc.core: INFO
   org.hibernate.type: INFO
-  org.hibernate.SQL: INFO
+  org.hibernate.SQL: DEBUG

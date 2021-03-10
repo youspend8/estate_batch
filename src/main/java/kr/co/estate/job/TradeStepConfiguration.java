@@ -47,9 +47,12 @@ public class TradeStepConfiguration implements ItemReader<List<TradeMasterEntity
         }
 
         List<String> period = Arrays.asList(
-                    "202011"
+                    "202102"
+//                    "202011"
 //                    "202010"
-//                  "202005"
+//                    "202007"
+//                , "202006"
+//                , "202005"
 //                , "202004"
 //                , "202003"
 //                , "202002"
@@ -91,7 +94,7 @@ public class TradeStepConfiguration implements ItemReader<List<TradeMasterEntity
     @Override
     public void write(List<? extends List<TradeMasterEntity>> list) throws Exception {
         log.info("{} save ==> {}", cityCodeEntity.getFullname(),list.get(0).size());
-        tradeMasterRepository.saveAllBatch(list.get(0));
+        tradeMasterRepository.saveAll(list.get(0));
     }
 
     public Callable<List<TradeMasterEntity>> callable(CityCodeEntity cityCodeEntity, String dealYmd, TradeType tradeType) {
@@ -130,11 +133,14 @@ public class TradeStepConfiguration implements ItemReader<List<TradeMasterEntity
                     log.error("findByRegionAndSigunguAndNameLike is null ==> {} / {} / {}", cityCodeEntity.getRegion(), cityCodeEntity.getSigungu(), entity.getLocation().getDong());
                     return cityCodeEntity;
                 })).getUmd());
-        entity.setCoordinate(coordinateService.searchCoordinate(entity).asEntity());
+        entity.setCoordinate(coordinateService.searchCoordinate(
+                entity.getLocation().getSigungu(), entity.getLocation().getDong(),
+                entity.getLocation().getJibun() != null ? entity.getLocation().getJibun() : "").asEntity());
         if (entity.getDeal().getDealYear() == 0 || entity.getDeal().getDealMonth() == 0) {
             entity.setDeal(Deal.of(Integer.parseInt(dealYmd.substring(0, 3)), Integer.parseInt(dealYmd.substring(4, 5))));
         }
 
+        System.out.println("entity :: " + entity);
         return entity;
     }
 }

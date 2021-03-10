@@ -10,6 +10,7 @@ import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -30,32 +31,32 @@ public class TradeMasterEntity {
     @Column(name = "NAME")
     private String name;
 
-    @Column(name = "BUILD_YEAR", nullable = false)
+    @Column(name = "BUILD_YEAR")
     private Integer buildYear;
 
     @Column(name = "FLOOR", length = 3)
     private Integer floor;
 
-    @Column(name = "AREA", nullable = false)
+    @Column(name = "AREA")
     private Double area;
 
     @Column(name = "AREA_SUB")
     private Double areaSub;
 
-    @Column(name = "AMOUNT", nullable = false)
+    @Column(name = "AMOUNT")
     private Integer amount;
 
     @Column(name = "AMOUNT_OPTION")
     private Integer amountOption;
 
-    @Column(name = "TRADE_TYPE", nullable = false, length = 1)
+    @Column(name = "TRADE_TYPE", length = 1)
     private TradeType tradeType;
 
     @Column(name = "VILLA_TYPE")
     private String villaType;
 
-    @Column(name = "CREATE_DATE", nullable = false)
-    private LocalDateTime createAt;
+    @Column(name = "CREATE_DATE")
+    private LocalDateTime createAt = LocalDateTime.now();
 
     @Embedded
     private Coordinate coordinate;

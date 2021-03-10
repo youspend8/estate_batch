@@ -13,16 +13,16 @@ import java.time.LocalDate;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 public class Deal {
-    @Column(name = "DEAL_YEAR", nullable = false, length = 4)
+    @Column(name = "DEAL_YEAR", length = 4)
     private Integer dealYear;
 
-    @Column(name = "DEAL_MONTH", nullable = false, length = 2)
+    @Column(name = "DEAL_MONTH", length = 2)
     private Integer dealMonth;
 
-    @Column(name = "DEAL_DAY", nullable = false, length = 2)
+    @Column(name = "DEAL_DAY", length = 2)
     private Integer dealDay;
 
-    @Column(name = "DEAL_DATE", nullable = false)
+    @Column(name = "DEAL_DATE")
     private LocalDate dealDate;
 
     public static Deal of(int year, int month) {

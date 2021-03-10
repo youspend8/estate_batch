@@ -1,12 +1,10 @@
 package kr.co.estate.entity;
 
 
+import kr.co.estate.entity.embedded.Coordinate;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Getter
 @Setter
@@ -37,4 +35,7 @@ public class CityCodeEntity {
 
     @Column(name = "FULLNAME")
     private String fullname;
+
+    @Embedded
+    private Coordinate coordinate;
 }

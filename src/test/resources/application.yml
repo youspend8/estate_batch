@@ -20,9 +20,11 @@ spring:
     properties:
       hibernate:
         format_sql: true
-    hibernate:
+        jdbc:
+          batch_size: 100
       ddl-auto: create-drop
       naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
 
 logging.level:
   kr.co.estate: DEBUG

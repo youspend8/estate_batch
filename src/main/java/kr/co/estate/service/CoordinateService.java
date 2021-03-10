@@ -1,12 +1,9 @@
 package kr.co.estate.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.co.estate.client.ClientRequest;
-import kr.co.estate.client.kakao.KakaoRequestURLFactory;
 import kr.co.estate.client.naver.NaverRequestURLFactory;
 import kr.co.estate.dto.CoordinateDto;
-import kr.co.estate.entity.TradeMasterEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,15 +12,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class CoordinateService {
-    private final ObjectMapper objectMapper;
     private final ClientRequest clientRequest;
-    private final KakaoRequestURLFactory kakaoRequestURLFactory;
     private final NaverRequestURLFactory naverRequestURLFactory;
 
-    public CoordinateDto searchCoordinate(TradeMasterEntity tradeMasterEntity) {
-        final String query = String.format("%s %s %s",
-                tradeMasterEntity.getLocation().getSigungu(), tradeMasterEntity.getLocation().getDong(),
-                tradeMasterEntity.getLocation().getJibun() != null ? tradeMasterEntity.getLocation().getJibun() : "");
+    public CoordinateDto searchCoordinate(String sigungu, String dong, String jibun) {
+        final String query = String.format("%s %s %s", sigungu, dong, jibun);
 
         log.debug("searchCoordinate:query ==> {}", query);
 
@@ -41,7 +34,7 @@ public class CoordinateService {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            log.info(query + " :: " + resultJson + " ==> " + tradeMasterEntity);
+            log.info(query + " :: " + resultJson + " ==> {} {} {}", sigungu, dong, jibun);
         }
 
         CoordinateDto coordinateDto = CoordinateDto.of(addressJson.get("x").asDouble(), addressJson.get("y").asDouble());
